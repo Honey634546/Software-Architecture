@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script src="js/index.js" type="text/javascript"></script>
+    <title>邮件推送</title>
+</head>
+<body>
+<form method="post" enctype="multipart/form-data">
+    {{ form.csrf_token }}
+    {{ form.email.label }}{{ form.email }}
+{#    {% for err in form.email.errors %}#}
+{#        {{ err }}#}
+{#    {% endfor %}#}
+    <br>
+    {{ form.title.label }}{{ form.title }}
+    <br>
+    {{ form.body.label }}
+    {{ form.body }}
+    <br>
+    {{ form.file }}
+    <br>
+    {{ form.submit }}
+    {% for msg in get_flashed_messages() %}
+    <p>{{ msg }}</p>
+    {% endfor %}
+</form>
+</body>
+</html>
