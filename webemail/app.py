@@ -1,12 +1,19 @@
-from flask import Flask
 from myemail import webEmail
-from flask import Flask, request, render_template, flash, url_for, redirect, escape
+from flask import Flask, request, render_template, flash, url_for, redirect, escape, jsonify
 from flask_wtf import FlaskForm, CsrfProtect
 from wtforms import *
 from wtforms.validators import *
+from werkzeug.wsgi import DispatcherMiddleware
+from spyne.server.wsgi import WsgiApplication
+import spyned
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = "123456"
+app.wsgi_app = DispatcherMiddleware(app.wsgi_app, {
+    '/soap': WsgiApplication(spyned.create_app(app))
+})
+
+# app.config.from_object('settings')
 
 
 # app.config["WTF_CSRF_ENABLED"] = True
@@ -61,15 +68,20 @@ def index():
 
 @app.route('/email', methods=['POST', 'GET'])
 def email():
-    data = eval(request.data.decode())
-    print(data)
+    try:
+        data = eval(request.data.decode())
+        print(data)
+    except BaseException:
+        data = request.values
+        print(data)
     url = data.get('url')
     title = data.get('title')
     body = data.get('body')
     myemail = webEmail()
     result, e = myemail.sendEmail(url, title, body, None)
-    return f'{result,e}'
+    return jsonify(状态=e)
 
 
 if __name__ == '__main__':
+
     app.run()

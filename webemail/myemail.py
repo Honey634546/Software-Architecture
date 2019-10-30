@@ -48,7 +48,7 @@ class webEmail:
             # client.sendmail(self.username, self.receivers, self.msg.as_string())
             client.quit()
             print('邮件发送成功！')
-            return 'Y','邮件发送成功！'
+            return 'Y', '邮件发送成功！'
         except smtplib.SMTPConnectError as e:
             print('邮件发送失败，连接失败:', e.smtp_code, e.smtp_error)
         except smtplib.SMTPAuthenticationError as e:
